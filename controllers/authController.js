@@ -11,7 +11,9 @@ const register = async (req, res) => {
   }
 
   try {
-    const userCheck = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
+    const userCheck = await pool.query("SELECT * FROM users WHERE email = $1", [
+      email,
+    ]);
 
     if (userCheck.rows.length > 0) {
       return res.status(400).json({ message: "Bu email zaten kayıtlı." });
@@ -44,7 +46,9 @@ const login = async (req, res) => {
   }
 
   try {
-    const userCheck = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
+    const userCheck = await pool.query("SELECT * FROM users WHERE email = $1", [
+      email,
+    ]);
 
     if (userCheck.rows.length === 0) {
       return res.status(400).json({ message: "Kullanıcı bulunamadı." });
@@ -56,7 +60,9 @@ const login = async (req, res) => {
       return res.status(400).json({ message: "Geçersiz şifre." });
     }
 
-    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: "7d" });
+    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+      expiresIn: "7d",
+    });
 
     res.status(200).json({
       message: "Giriş başarılı.",
@@ -73,4 +79,11 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { register, login };
+
+const logout = (req, res) => {
+  // Burada gerçek bir işlem yok çünkü JWT stateless
+  res.status(200).json({ message: "Çıkış yapıldı. Token sil." });
+};
+
+
+module.exports = { register, login, logout };
