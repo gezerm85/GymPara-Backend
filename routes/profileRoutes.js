@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { getProfile, createProfile, updateProfile } = require("../controllers/profileController");
+const { getProfile, createProfile, updateProfile, updateWelcomeCompleted } = require("../controllers/profileController");
 const verifyToken = require("../middlewares/verifyToken");
 
 
@@ -115,12 +115,63 @@ const verifyToken = require("../middlewares/verifyToken");
  *         description: Profil güncellendi
  */
 
+/**
+ * @swagger
+ * /api/profile/welcome:
+ *   put:
+ *     summary: Kullanıcının welcome completed durumunu günceller
+ *     tags:
+ *       - Profile
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - welcome_completed
+ *             properties:
+ *               welcome_completed:
+ *                 type: boolean
+ *                 example: true
+ *                 description: Hoş geldin sürecinin tamamlanıp tamamlanmadığı
+ *     responses:
+ *       200:
+ *         description: Welcome completed durumu güncellendi
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Welcome completed durumu güncellendi."
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                       example: 1
+ *                     welcome_completed:
+ *                       type: boolean
+ *                       example: true
+ *       400:
+ *         description: Geçersiz boolean değeri
+ *       401:
+ *         description: Token bulunamadı
+ *       404:
+ *         description: Kullanıcı bulunamadı
+ */
+
 
 
 
 router.get("/", verifyToken, getProfile);
 router.post("/", verifyToken, createProfile);
 router.put("/", verifyToken, updateProfile);
+router.put("/welcome", verifyToken, updateWelcomeCompleted);
 
 
 module.exports = router;

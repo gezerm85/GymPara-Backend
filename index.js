@@ -16,7 +16,10 @@ const rewardRoutes = require("./routes/rewardRoutes");
 dotenv.config();
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: ['http://localhost:3000', 'http://localhost:8081', 'http://192.168.1.100:3000'],
+  credentials: true
+}));
 app.use(express.json()); // JSON body parse
 
 setupSwaggerDocs(app); 
@@ -32,5 +35,5 @@ app.use("/api/rewards", rewardRoutes);
 
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`🔊 Sunucu ${PORT} portunda çalışıyor...`));
+app.listen(PORT, '0.0.0.0', () => console.log(`🔊 Sunucu ${PORT} portunda çalışıyor...`));
  

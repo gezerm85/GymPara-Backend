@@ -102,6 +102,35 @@ const updateProfile = async (req, res) => {
 };
 
 
-module.exports = { getProfile, createProfile, updateProfile };
+// PUT /api/profile/welcome - Welcome completed durumunu güncelle
+const updateWelcomeCompleted = async (req, res) => {
+  const userId = req.user.id;
+  const { welcome_completed } = req.body;
+
+  if (typeof welcome_completed !== 'boolean') {
+    return res.status(400).json({ message: "welcome_completed boolean olmalı." });
+  }
+
+  try {
+    const result = await pool.query(
+      "UPDATE users SET welcome_completed = $1 WHERE id = $2 RETURNING id, welcome_completed",
+      [welcome_completed, userId]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: "Kullanıcı bulunamadı." });
+    }
+
+    res.status(200).json({
+      message: "Welcome completed durumu güncellendi.",
+      user: result.rows[0]
+    });
+  } catch (err) {
+    console.error("Welcome completed güncelleme hatası:", err);
+    res.status(500).json({ message: "Sunucu hatası." });
+  }
+};
+
+module.exports = { getProfile, createProfile, updateProfile, updateWelcomeCompleted };
 
 
