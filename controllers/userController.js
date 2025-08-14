@@ -114,8 +114,38 @@ const updateUserPoint = async (req, res) => {
 };
 
 
+// GET /api/users/leaderboard - Tüm kullanıcıların puan sıralaması
+const getLeaderboard = async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT 
+        u.id,
+        u.name,
+        u.point,
+        u.profile_image_url,
+        up.gender,
+        up.birth_year,
+        up.activity_level,
+        up.motivation,
+        up.weight,
+        up.height,
+        up.workout_days
+      FROM users u
+      LEFT JOIN user_profiles up ON u.id = up.user_id
+      WHERE u.welcome_completed = true
+      ORDER BY u.point DESC, u.name ASC
+    `);
+
+    res.status(200).json(result.rows);
+  } catch (err) {
+    console.error("Leaderboard getirme hatası:", err);
+    res.status(500).json({ message: "Sunucu hatası." });
+  }
+};
+
 module.exports = {
   getFullUserProfile,
   uploadProfileImage,
-  updateUserPoint
+  updateUserPoint,
+  getLeaderboard
 };
